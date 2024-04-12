@@ -1,7 +1,7 @@
 "use client";
 
-import styles from "./comments.module.css";
 import Link from "next/link";
+import styles from "./comments.module.css";
 import Image from "next/image";
 import useSWR from "swr";
 import { useSession } from "next-auth/react";
@@ -24,7 +24,7 @@ const Comments = ({ postSlug }) => {
   const { status } = useSession();
 
   const { data, mutate, isLoading } = useSWR(
-    `http://localhost:3000/api/comments?postSlug${postSlug}`,
+    `http://localhost:3000/api/comments?postSlug=${postSlug}`,
     fetcher
   );
 
@@ -42,12 +42,12 @@ const Comments = ({ postSlug }) => {
     <div className={styles.container}>
       <h1 className={styles.title}>Comments</h1>
       {status === "authenticated" ? (
-        <div>
+        <div className={styles.write}>
           <textarea
             placeholder="write a comment..."
             className={styles.input}
             onChange={(e) => setDesc(e.target.value)}
-          ></textarea>
+          />
           <button className={styles.button} onClick={handleSubmit}>
             Send
           </button>
@@ -57,7 +57,7 @@ const Comments = ({ postSlug }) => {
       )}
       <div className={styles.comments}>
         {isLoading
-          ? "loading..."
+          ? "loading"
           : data?.map((item) => (
               <div className={styles.comment} key={item._id}>
                 <div className={styles.user}>
@@ -75,7 +75,7 @@ const Comments = ({ postSlug }) => {
                     <span className={styles.date}>{item.createdAt}</span>
                   </div>
                 </div>
-                <p>{item.desc}</p>
+                <p className={styles.desc}>{item.desc}</p>
               </div>
             ))}
       </div>
