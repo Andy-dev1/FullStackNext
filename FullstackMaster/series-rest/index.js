@@ -1,0 +1,21 @@
+const express = require("express");
+const app = express();
+const port = process.env.PORT || 3000;
+
+
+const mongo = process.env.MONGO || "mongodb://localhost/minhas-series-rest";
+const series = require("./routes/series");
+const bodyParser = require("body-parser");
+app.use(bodyParser({ extended: true }));
+
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+
+app.use("/series", series);
+
+mongoose
+  .connect(mongo, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    app.listen(port, () => console.log("Listening..."));
+  })
+  .catch((e) => console.log(e));
