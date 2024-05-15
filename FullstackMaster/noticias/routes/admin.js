@@ -6,9 +6,9 @@ const Noticia = require("../models/noticia");
 
 router.use((req, res, next) => {
   if ("user" in req.session) {
-    if (req.session.user.role.indexOf("restrito") >= 0) {
+    if (req.session.user.role.indexOf("admin") >= 0) {
       return next();
-    }else{
+    } else {
       res.redirect("/");
     }
   } else {
@@ -17,11 +17,11 @@ router.use((req, res, next) => {
 });
 
 router.get("/", (req, res) => {
-  res.send("restrito");
+  res.send("admin");
 });
 router.get("/noticias", async (req, res) => {
-  const noticias = await Noticia.find({ category: "private" });
-  res.render("noticias/restrito", { noticias });
+  const noticias = await Noticia.find({});
+  res.render("noticias/admin", { noticias });
 });
 
 module.exports = router;

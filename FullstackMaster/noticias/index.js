@@ -5,8 +5,12 @@ const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 const User = require("./models/user");
+const Noticia = require("./models/noticia")
 const noticias = require("./routes/noticias");
 const restrito = require("./routes/restrito");
+const admin = require("./routes/admin");
+const auth = require("./routes/auth");
+const pages = require("./routes/pages");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const mongo = process.env.MONGODB || "mongodb://localhost/noticias";
@@ -18,43 +22,49 @@ app.use(session({ secret: "fullstack" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-app.use("/restrito", (req, res, next) => {
-  if ("user" in req.session) {
-    return next();
-  } else {
-    res.redirect("/login");
-  }
-});
+app.use("/", auth);
+app.use("/", pages);
+
+
+
 app.use("/restrito", restrito);
 app.use("/noticias", noticias);
-app.get("/login", (req, res) => {
-  res.render("login");
-});
+app.use("/admin", admin);
 
-app.post("/login", async (req, res) => {
-  const user = await User.findOne({ username: req.body.username });
-  const isValid = await user.checkPassword(req.body.password);
-  if (isValid) {
-    req.session.user = user;
-    res.redirect("/restrito/noticias");
-  } else {
-    res.redirect("/login");
-  }
-});
-app.get("/", (req, res) => res.render("index"));
 
 const createInitialUser = async () => {
-  const total = await User.countDocuments({ username: "jazz" });
+  const total = await User.countDocuments({  });
   if (total == 0) {
     const user = new User({
-      username: "jazz",
+      username: "jazz1",
       password: "123456",
+      role: ['restrito','admin']
     });
     await user.save();
+    const user2 = new User({
+      username: "jazz2",
+      password: "123456",
+      role: ['restrito']
+    });
+    await user2.save();
     console.log("User created");
   } else {
     console.log("User created Skipped");
   }
+
+  // const noticia = new Noticia({
+  //   title: "Noticia publica "+ new Date().getTime(),
+  //   content: "Content",
+  //   category: "public"
+  // })
+  // await noticia.save()
+  // const noticia2 = new Noticia({
+  //   title: "Noticia privada "+ new Date().getTime(),
+  //   content: "Content",
+  //   category: "private"
+  // })
+  // await noticia2.save()
+
 };
 
 mongoose
