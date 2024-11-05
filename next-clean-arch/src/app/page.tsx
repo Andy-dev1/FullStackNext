@@ -1,11 +1,13 @@
-import { http } from "@/utils/http";
-import { Product } from "@/utils/models";
+import { ListProductUseCase } from "@/@core/application/product/list-products.use-case";
+import { container, Registry } from "@/@core/infra/container-registry";
+
 import Link from "next/link";
 
 export default async function Home() {
-  const { data: products } = await http.get<Product[]>(
-    "http://localhost:8000/products"
+  const useCase = container.get<ListProductUseCase>(
+    Registry.ListProductUseCase
   );
+  const products = await useCase.execute();
 
   return (
     <div>
@@ -15,10 +17,20 @@ export default async function Home() {
         {products.map((item, key) => (
           <li key={key}>
             <label htmlFor="">Nome: </label>
-            {item.name} |<Link className="text-blue-500" href={`/products/${item.id}`}> Ver</Link>
+            {item.name} |
+            <Link className="text-blue-500" href={`/products/${item.id}`}>
+              Ver
+            </Link>
           </li>
         ))}
       </ul>
     </div>
   );
 }
+
+// class ListProductsUseCaseFactory {
+//   static create() {
+//     const gateway = new ProductHttpGateway(http);
+//     return new ListProductUseCase(gateway);
+//   }
+// }

@@ -1,6 +1,7 @@
 "use client";
+import { http } from "@/@core/infra/http";
 import { CartContext } from "@/context/cart.provider";
-import { http } from "@/utils/http";
+
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useContext } from "react";
 
@@ -12,7 +13,9 @@ export default function Checkout() {
     event.preventDefault();
     const credit_card_number = event.currentTarget.credit_card_number.value;
     const { data: order } = await http.post("orders", {
-      products: cartContext.products,
+      products: cartContext.cart.products.map((product) => ({
+        ...product.props,
+      })),
       credit_card_number,
     });
     router.push(`/checkout/${order.id}/success`);
@@ -22,9 +25,9 @@ export default function Checkout() {
     <div>
       <h3>Meu carrinho</h3>
       <ul>
-        {cartContext.products.map((product, key) => (
+        {cartContext.cart.props.products.map((product, key) => (
           <li key={key}>
-            Produto {product.name} - {product.price}
+            Produto {product.props.name} - {product.props.price}
           </li>
         ))}
       </ul>

@@ -1,61 +1,73 @@
 "use client";
-import { Product } from "@/utils/models";
+import { AddProductInCartUseCase } from "@/@core/application/cart/add-product-in-cart.use-case";
+import { ClearCartUseCase } from "@/@core/application/cart/clear-cart.use-case";
+import { GetCartUseCase } from "@/@core/application/cart/get-cart.use-case";
+import { RemoveProductFromCartUseCase } from "@/@core/application/cart/remove-product-from-cart.use-case";
+import { Cart } from "@/@core/domain/entities/cart";
+import { Product } from "@/@core/domain/entities/product";
+import { container, Registry } from "@/@core/infra/container-registry";
+
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 
 export type CartContextType = {
-  products: Product[];
+  cart: Cart;
   addProduct: (product: Product) => void;
-  removeProduct: (product: Product) => void;
+  removeProduct: (productId: string) => void;
   clear: () => void;
-  total: number;
+  reload: () => void;
 };
 
 const defaultContext: CartContextType = {
-  products: [],
-  addProduct: () => {},
-  removeProduct: () => {},
+  cart: new Cart({ products: [] }),
+  addProduct: (product: Product) => {},
+  removeProduct: (productId: string) => {},
   clear: () => {},
-  total: 0,
+  reload: () => {},
 };
 
 export const CartContext = createContext(defaultContext);
 
+const getUseCase = container.get<GetCartUseCase>(Registry.GetCartUseCase);
+
+const addProductUseCase = container.get<AddProductInCartUseCase>(
+  Registry.AddProductInCartUseCase
+);
+const removeProductUseCase = container.get<RemoveProductFromCartUseCase>(
+  Registry.RemoveProductFromCartUseCase
+);
+const clearCartUseCase = container.get<ClearCartUseCase>(
+  Registry.ClearCartUseCase
+);
+
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const [products, setProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedProducts = localStorage.getItem("products");
-      if (storedProducts) {
-        setProducts(JSON.parse(storedProducts));
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!products) {
-      return;
-    }
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
+  const [cart, setCart] = useState<Cart>(defaultContext.cart);
 
   const addProduct = (product: Product) => {
-    setProducts([...products, product]);
+    const cart = addProductUseCase.execute(product);
+    setCart(cart);
   };
 
-  const removeProduct = (product: Product) => {
-    setProducts(products.filter((p) => p.id !== product.id));
+  const removeProduct = (productId: string) => {
+    const cart = removeProductUseCase.execute(productId);
+    setCart(cart);
   };
 
   const clear = () => {
-    setProducts([]);
+    const cart = clearCartUseCase.execute();
+    setCart(cart);
   };
 
-  const total = products.reduce((acc, product) => acc + product.price, 0);
+  const reload = () => {
+    const cart = getUseCase.execute();
+    setCart(cart);
+  };
 
+  useEffect(() => {
+    reload();
+  }, [reload]);
   return (
     <CartContext.Provider
-      value={{ products, addProduct, removeProduct, clear, total }}
+      value={{ cart, addProduct, removeProduct, clear, reload }}
     >
       {children}
     </CartContext.Provider>
