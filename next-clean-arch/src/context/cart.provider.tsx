@@ -65,6 +65,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     reload();
   }, [reload]);
+  
   return (
     <CartContext.Provider
       value={{ cart, addProduct, removeProduct, clear, reload }}

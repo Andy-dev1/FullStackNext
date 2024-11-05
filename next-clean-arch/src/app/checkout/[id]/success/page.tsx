@@ -1,5 +1,7 @@
-import { http } from "@/utils/http";
-import { Order, Product } from "@/utils/models";
+
+
+import { Order } from "@/@core/domain/entities/order";
+import { http } from "@/@core/infra/http";
 import React from "react";
 
 export default async function success({ params }: { params: { id: string } }) {
