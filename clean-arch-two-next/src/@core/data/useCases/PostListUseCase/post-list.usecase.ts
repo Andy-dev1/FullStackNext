@@ -1,13 +1,19 @@
 import { IPostList } from "@/@core/domain/contracts/post.contracts";
-import { PostModel, PostModelAPI } from "@/@core/domain/models/post.model";
-import axios from "axios";
+import { PostModelAPI } from "@/@core/domain/models/post.model";
+
 import { postListAdapter } from "./post-list.adapter";
+import { IHttpClient } from "@/@core/infra/contracts/http-clients";
 
 export class PostListUseCase implements IPostList {
-  async list(): Promise<PostModel[]> {
-    const { data } = await axios.get<PostModelAPI[]>(
-      "http://localhost:8000/posts"
-    );
+  constructor(private readonly httpCLient: IHttpClient<PostModelAPI[]>) {}
+
+  async list(): Promise<IPostList.Model> {
+    const { data } = await this.httpCLient.request({
+      method: "get",
+      url: "http://localhost:8000/posts",
+    });
+
     return data.map(postListAdapter.toPostModel);
   }
 }
+
