@@ -1,0 +1,71 @@
+{
+  "todos": [
+    {
+      "checked": true,
+      "title": "Complete math assignment",
+      "description": "Finish the remaining exercises in the calculus workbook",
+      "id": 1
+    },
+    {
+      "checked": false,
+      "title": "Prepare presentation for science class",
+      "description": "Research and create slides on the topic of renewable energy sources",
+      "id": 2
+    },
+    {
+      "checked": true,
+      "title": "Read chapter 5 of history book",
+      "description": "Review notes and summarize key points about World War II events",
+      "id": 3
+    },
+    {
+      "checked": false,
+      "title": "Organize workspace",
+      "description": "Declutter and clean desk area for better focus and productivity",
+      "id": 4
+    },
+    {
+      "checked": false,
+      "title": "Start new coding project",
+      "description": "Set up the repository and create initial components for the new web application",
+      "id": 5
+    },
+    {
+      "checked": true,
+      "title": "Grocery shopping",
+      "description": "Buy vegetables, fruits, and other essentials for the week",
+      "id": 6
+    },
+    {
+      "checked": false,
+      "title": "Exercise",
+      "description": "Go for a 30-minute run or do a workout at home",
+      "id": 7
+    },
+    {
+      "checked": false,
+      "title": "Prepare for Japanese lesson",
+      "description": "Review vocabulary and practice speaking for upcoming session",
+      "id": 8
+    },
+    {
+      "checked": true,
+      "title": "Pay bills",
+      "description": "Complete payment for electricity, water, and internet bills",
+      "id": 9
+    },
+    {
+      "checked": false,
+      "title": "Practice drawing",
+      "description": "Spend 1 hour drawing new character concepts and improve anatomy skills",
+      "id": 10
+    }
+  ],
+  "cart": {
+    "totalCost": "130$",
+    "products": ["hotdog", "pizza", "extra sauce"]
+  },
+  "user": {
+    "userName": "Jazz"
+  }
+}
