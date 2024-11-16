@@ -11,7 +11,14 @@ const Cart = () => {
       <p>
         username:{userQuery.isLoading ? "Loading..." : userQuery.data?.userName}
       </p>
-      <p>total cart cost: {cartQuery.data?.totalCost}</p>
+      <p>
+        total cart cost:{" "}
+        {cartQuery.data
+          ? cartQuery.data.totalCost
+          : cartQuery.isLoading
+          ? "Loading..."
+          : "No user found!"}
+      </p>
     </div>
   );
 };
